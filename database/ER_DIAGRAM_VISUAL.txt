@@ -1,0 +1,146 @@
+# ER DİYAGRAMI - GÖRSEL REPRESENTASYON
+
+## VARLIK İLİŞKİ ŞEMASI
+
+```
+┌─────────────┐
+│    USERS    │
+│─────────────│
+│ UserID (PK) │
+│ Email       │
+│ PasswordHash│
+│ FirstName   │
+│ LastName    │
+│ Phone       │
+│ Role        │
+└──────┬──────┘
+       │
+       ├──────────────────┐
+       │                  │
+       │ (1:1)            │ (1:1)
+       │                  │
+┌──────▼──────┐    ┌──────▼────────┐
+│  PATIENTS   │    │  THERAPISTS   │
+│─────────────│    │───────────────│
+│ PatientID(PK)│    │ TherapistID(PK)│
+│ UserID (FK) │    │ UserID (FK)   │
+│ DateOfBirth │    │ LicenseNumber │
+│ Gender      │    │ ExperienceYears│
+│ Address     │    │ Bio           │
+└──────┬──────┘    │ ConsultationFee│
+       │           └──────┬─────────┘
+       │                  │
+       │ (1:N)            │ (1:N)              ┌──────────────────┐
+       │                  │                    │ SPECIALIZATIONS  │
+       │                  │                    │──────────────────│
+┌──────▼──────────────┐  │                    │ SpecializationID │
+│   APPOINTMENTS      │  │                    │ Name             │
+│─────────────────────│  │                    │ Description      │
+│ AppointmentID (PK)  │  │                    └────────┬─────────┘
+│ PatientID (FK)      │◄─┘                             │
+│ TherapistID (FK)    │                                │ (N:N)
+│ TreatmentTypeID(FK) │                                │
+│ AppointmentDate     │                                │
+│ AppointmentTime     │                    ┌───────────▼───────────────┐
+│ Status              │                    │THERAPIST_SPECIALIZATIONS │
+│ Problem             │                    │──────────────────────────│
+│ Notes               │                    │ TherapistSpecializationID│
+└──────┬──────────────┘                    │ TherapistID (FK)         │
+       │                                   │ SpecializationID (FK)    │
+       │ (1:N)                             └──────────────────────────┘
+       │
+       ├──────────┬────────────┬───────────┐
+       │          │            │           │
+┌──────▼──────┐  │  ┌─────────▼───────┐  │
+│   SESSIONS  │  │  │    REVIEWS      │  │
+│─────────────│  │  │─────────────────│  │
+│ SessionID   │  │  │ ReviewID (PK)   │  │
+│ AppointmentID│  │  │ PatientID (FK)  │  │
+│ SessionDate │  │  │ TherapistID(FK) │  │
+│ Notes       │  │  │ AppointmentID(FK)│  │
+└─────────────┘  │  │ Rating          │  │
+                 │  │ Comment         │  │
+       ┌─────────▼──▼───────────────┐  │
+       │       PAYMENTS             │  │
+       │────────────────────────────│  │
+       │ PaymentID (PK)             │  │
+       │ AppointmentID (FK)         │  │
+       │ Amount                     │  │
+       │ PaymentMethod              │  │
+       │ PaymentStatus              │  │
+       └────────────────────────────┘  │
+                                       │
+                       ┌───────────────▼──────┐
+                       │   NOTIFICATIONS      │
+                       │──────────────────────│
+                       │ NotificationID (PK)  │
+                       │ UserID (FK)          │
+                       │ Title                │
+                       │ Message              │
+                       │ Type                 │
+                       └──────────────────────┘
+
+┌──────────────────────────────┐
+│    TREATMENT_TYPES           │
+│──────────────────────────────│
+│ TreatmentTypeID (PK)         │
+│ Name                         │
+│ Code                         │
+│ Duration                     │
+│ DefaultPrice                 │
+└──────────┬───────────────────┘
+           │
+           │ (1:N)
+           │
+┌──────────▼───────────────────┐
+│   SCHEDULE_SLOTS              │
+│───────────────────────────────│
+│ ScheduleSlotID (PK)           │
+│ TherapistID (FK)              │
+│ DayOfWeek                     │
+│ StartTime                     │
+│ EndTime                       │
+│ IsAvailable                   │
+└───────────────────────────────┘
+```
+
+## İLİŞKİ TİPLERİ
+
+- (1:1) : Bire Bir İlişki
+- (1:N) : Bire Çok İlişki
+- (N:N) : Çoka Çok İlişki (Ara tablo ile)
+- (PK) : Primary Key (Birincil Anahtar)
+- (FK) : Foreign Key (Yabancı Anahtar)
+
+## ANAHTAR GÖSTERİMLERİ
+
+**Birincil Anahtarlar:**
+- Users: UserID
+- Patients: PatientID
+- Therapists: TherapistID
+- Appointments: AppointmentID
+- Specializations: SpecializationID
+- TreatmentTypes: TreatmentTypeID
+- Sessions: SessionID
+- Reviews: ReviewID
+- Payments: PaymentID
+- Notifications: NotificationID
+- ScheduleSlots: ScheduleSlotID
+- TherapistSpecializations: TherapistSpecializationID
+
+**Yabancı Anahtarlar:**
+- Patients.UserID → Users.UserID
+- Therapists.UserID → Users.UserID
+- Appointments.PatientID → Patients.PatientID
+- Appointments.TherapistID → Therapists.TherapistID
+- Appointments.TreatmentTypeID → TreatmentTypes.TreatmentTypeID
+- Sessions.AppointmentID → Appointments.AppointmentID
+- Reviews.PatientID → Patients.PatientID
+- Reviews.TherapistID → Therapists.TherapistID
+- Reviews.AppointmentID → Appointments.AppointmentID
+- Payments.AppointmentID → Appointments.AppointmentID
+- Notifications.UserID → Users.UserID
+- ScheduleSlots.TherapistID → Therapists.TherapistID
+- TherapistSpecializations.TherapistID → Therapists.TherapistID
+- TherapistSpecializations.SpecializationID → Specializations.SpecializationID
+
