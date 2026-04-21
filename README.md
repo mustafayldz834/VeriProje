@@ -26,3 +26,20 @@ VeriProje, fizyoterapi merkezleri için geliştirilmiş modern bir randevu yöne
 - Node.js
 - Express
 - SQL Server
+
+- ## 📂 Proje Yapısı
+
+```bash
+VeriProje/
+│
+├── app/              # Next.js sayfaları
+├── components/       # UI bileşenleri
+├── services/         # API servisleri (şu an mock veri içerir)
+│
+├── backend/          # Express backend
+│   ├── routes/       # API route'ları
+│   ├── config/       # Veritabanı bağlantısı
+│   └── server.js     # Sunucu başlangıç noktası
+│
+├── db.js             # Alternatif veritabanı bağlantısı
+└── package.json
